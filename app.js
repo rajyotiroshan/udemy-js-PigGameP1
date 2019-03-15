@@ -8,13 +8,13 @@ GAME RULES:
 - The first player to reach 100 points on GLOBAL score wins the game
 
 */
-var scores, roundScore, activePlayer, dice, gamePlaying;
+var scores, roundScore, activePlayer, dice, gamePlaying, prevRolls=null;
 init();
 
 //click listener on roll-dice btn
 document.querySelector('.btn-roll').addEventListener('click', function(){
     if(gamePlaying) {//game is running
-    //1. random number.
+        //1. random number.
         var dice = Math.floor(Math.random()*6)+1;
         //2. display the result.
         var diceDOM = document.querySelector('.dice');
@@ -22,8 +22,23 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
         diceDOM.src = 'dice-' + dice +'.png';
 
         //3. update the round score If rolled number was not 1.
+        //check if dice roll to six.
+        if( prevRolls && dice === 6 && prevRolls === dice  ) {
+            //make total score of active player to zero.
+            scores[activePlayer] = 0;
+            //make previous roll to null,
+            prevRolls = null;
+            //update ui for current player scores.
+            //update the UI 
+            document.querySelector("#score-" + activePlayer).textContent = scores[activePlayer];
+            //let next player play.
+            nextPlayer();
+            return;
+        }
 
         if(dice !== 1) {
+            //save dice to prevRolls
+            prevRolls = dice;
             //Add score 
             roundScore += dice;
             document.querySelector('#current-'+activePlayer).textContent= roundScore;
@@ -39,6 +54,8 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
 document.querySelector(".btn-hold").addEventListener("click", function(){
     
     if(gamePlaying) {
+        //make preRoll to null.
+        prevRolls = null;
         //Add current score to global score.
         scores[activePlayer] += roundScore;
         roundScore = 0;
@@ -47,7 +64,7 @@ document.querySelector(".btn-hold").addEventListener("click", function(){
         document.querySelector("#score-" + activePlayer).textContent = scores[activePlayer];
 
         //check if player won the game.
-        if(scores[activePlayer] > 20) {
+        if(scores[activePlayer] > 100) {
             document.querySelector("#name-"+activePlayer).textContent='Winner';  
             document.querySelector(".dice").style.display = 'none';
             document.querySelector(".player-"+activePlayer+"-panel").classList.add("winner");
@@ -91,6 +108,7 @@ function init() {
     roundScore = 0;
     activePlayer = 0; 
     gamePlaying = true;
+    prevRolls = null;
     //hide roller dice
     document.querySelector(".dice").style.display = 'none';
     //set current score to zero
