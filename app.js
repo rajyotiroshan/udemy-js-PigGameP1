@@ -8,7 +8,8 @@ GAME RULES:
 - The first player to reach 100 points on GLOBAL score wins the game
 
 */
-var scores, roundScore, activePlayer, dice, gamePlaying, prevRolls=null;
+var scores, roundScore, activePlayer, dice, gamePlaying; 
+//var prevRolls=null;
 
 init();
 
@@ -16,15 +17,18 @@ init();
 document.querySelector('.btn-roll').addEventListener('click', function(){
     if(gamePlaying) {//game is running
         //1. random number.
-        var dice = Math.floor(Math.random()*6)+1;
+        var dice1 = Math.floor(Math.random()*6)+1;
+        var dice2 = Math.floor(Math.random()*6)+1;
         //2. display the result.
-        var diceDOM = document.querySelector('.dice');
-        diceDOM.style.display = 'block';
-        diceDOM.src = 'dice-' + dice +'.png';
+        document.getElementById('dice-1').style.display = 'block';
+        document.getElementById('dice-2').style.display = 'block';
+
+        document.getElementById('dice-1').src = 'dice-' + dice1 +'.png';
+        document.getElementById('dice-2').src ='dice-' + dice2 + '.png';
 
         //3. update the round score If rolled number was not 1.
         //check if dice roll to six.
-        if( prevRolls && dice === 6 && prevRolls === dice  ) {
+       /*  if( prevRolls && dice === 6 && prevRolls === dice  ) {
             //make total score of active player to zero.
             scores[activePlayer] = 0;
             //make previous roll to null,
@@ -35,13 +39,13 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
             //let next player play.
             nextPlayer();
             return;
-        }
+        } */
 
-        if(dice !== 1) {
+        if(dice1 !== 1 && dice2 !== 1) {
             //save dice to prevRolls
-            prevRolls = dice;
+           // prevRolls = dice;
             //Add score 
-            roundScore += dice;
+            roundScore += dice1 + dice2;
             document.querySelector('#current-'+activePlayer).textContent= roundScore;
         }else {
             //call next player
@@ -56,7 +60,7 @@ document.querySelector(".btn-hold").addEventListener("click", function(){
     
     if(gamePlaying) {
         //make preRoll to null.
-        prevRolls = null;
+        //prevRolls = null;
         //Add current score to global score.
         scores[activePlayer] += roundScore;
         roundScore = 0;
@@ -74,7 +78,8 @@ document.querySelector(".btn-hold").addEventListener("click", function(){
         //check if player won the game.
         if(scores[activePlayer] > winningScore) {
             document.querySelector("#name-"+activePlayer).textContent='Winner';  
-            document.querySelector(".dice").style.display = 'none';
+            document.getElementById('dice-1').style.display = 'none';
+            document.getElementById('dice-2').style.display = 'none';
             document.querySelector(".player-"+activePlayer+"-panel").classList.add("winner");
             document.querySelector(".player-"+activePlayer+"-panel").classList.remove("active");
             gamePlaying = false;
@@ -106,7 +111,8 @@ function nextPlayer(){
     document.querySelector('.player-0-panel').classList.toggle('active');
     document.querySelector('.player-1-panel').classList.toggle('active');
     //hide roller dice
-    document.querySelector(".dice").style.display = 'none';
+    document.getElementById('dice-1').style.display = 'none';
+    document.getElementById('dice-2').style.display = 'none';
 }
 
 //init game.
@@ -116,9 +122,10 @@ function init() {
     roundScore = 0;
     activePlayer = 0; 
     gamePlaying = true;
-    prevRolls = null;
+    //prevRolls = null;
     //hide roller dice
-    document.querySelector(".dice").style.display = 'none';
+    document.getElementById('dice-1').style.display = 'none';
+    document.getElementById('dice-2').style.display = 'none';
     //set current score to zero
     document.getElementById("current-0").textContent = '0';
     document.getElementById("current-1").textContent = '0';
